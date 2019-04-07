@@ -1,0 +1,12 @@
+comtypes==1.1.7
+Pillow==5.4.1
+PyAutoGUI==0.9.42
+PyGetWindow==0.0.4
+PyMsgBox==1.0.6
+PyRect==0.1.4
+PyScreeze==0.1.20
+PyTweening==1.0.3
+pywin32==224
+pywinauto==0.6.6
+robotframework==3.1.1
+six==1.12.0
