@@ -1,0 +1,26 @@
+Start the viewer:
+  elinkviewer
+
+Start the viewer and connect to the specified host:
+  elinkviewer hostname::port [OPTIONS]
+  elinkviewer -host=hostname [OPTIONS]
+  elinkviewer -optionsfile=FILENAME [OPTIONS]
+
+Start the viewer in the listening mode:
+  elinkviewer -listen
+
+Show this help on command line usage:
+  elinkviewer -help
+
+The following OPTIONS are supported (all of them should be used in the
+form -option=VALUE where both option name and value are case-insensitive):
+
+  -optionsfile	The specified file will be read and the corresponding
+		connection will be restored (use Save Connection Info
+		to create such files).
+
+  -host		Connect to the specified host name.
+
+  -port		Specify the port number.
+
+  -password	Specify the password for authenticating to the server.
