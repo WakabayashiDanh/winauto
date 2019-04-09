@@ -1,7 +1,6 @@
 import pyautogui
 
-
-class ActionClickGui(object):
+class ActionClickGui():
 
     def __init__(self):
         self.resolution = str(pyautogui.size())

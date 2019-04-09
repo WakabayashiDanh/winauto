@@ -1,12 +1,12 @@
 from pywinauto.application import Application
 from ActionClickGui import ActionClickGui
-import time, pyautogui
+import time
 import pyuac
 import warnings
 warnings.simplefilter('ignore', category=UserWarning)
 
 
-class HandlerInstall():
+class HandlerInstall(object):
 
    def install_elinkviewer(self, path_file_setup, path_store_install=None, install_vc_redist=True):
        try:
@@ -24,12 +24,12 @@ class HandlerInstall():
            elink_viewer.InstallDialog.NextButton.wait('ready', timeout=30).click_input()
            elink_viewer.InstallDialog.NextButton.wait('ready', timeout=30).click_input()
            elink_viewer.InstallDialog.InstallButton.wait('ready', timeout=30).click_input()
-           time.sleep(10)
+           time.sleep(15)
            # Install Microsoft Visual C++
            if install_vc_redist:
                ActionClickGui().check_agree_box_visual()
                ActionClickGui().click_install_visual()
-               time.sleep(10)
+               time.sleep(35)
                ActionClickGui().click_close_visual()
            else:
                ActionClickGui().click_cancel_visual()
@@ -57,6 +57,7 @@ class HandlerInstall():
        vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
        vc_redist.CheckBox.wait('ready', timeout=5).click_input()
        vc_redist.InstallButton.wait('ready', timeout=30).click_input()
+       time.sleep(35)
        vc_redist.CloseButton5.wait('ready', timeout=30).click_input()
 
    def start_elink_viewer(self, path_store_app, server_ip, password, close=True):
@@ -83,21 +84,21 @@ class HandlerInstall():
    def uninstall_visual(self, path_file_setup, version, old_version=False, new_version=False):
 
        title = "Microsoft Visual C++ 2015 Redistributable (x86) - 14.0.24123 Setup"
-       if version == '64':
+       if version == 'win64':
            title = "Microsoft Visual C++ 2015 Redistributable (x64) - 14.0.24212 Setup"
-       if version == '64' and old_version:
+       if version == 'win64' and old_version:
            title = "Microsoft Visual C++ 2013 Redistributable (x64) - 12.0.30501 Setup"
-       if version == '86' and old_version:
+       if version == 'win86' and old_version:
            title = "Microsoft Visual C++ 2013 Redistributable (x86) - 12.0.30501 Setup"
-       if version == '64' and new_version:
+       if version == 'win64' and new_version:
            title = "Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27027 Setup"
-       if version == '86' and new_version:
+       if version == 'win86' and new_version:
            title = "Microsoft Visual C++ 2017 Redistributable (x86) - 14.16.27027 Setup"
        Application().start(path_file_setup)
        time.sleep(2)
        vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
        vc_redist.UninstallButton.wait('ready', timeout=5).click_input()
-       time.sleep(15)
+       time.sleep(35)
        vc_redist.CloseButton5.wait('ready', timeout=30).click_input()
 
    def close_elinkviewer(self):

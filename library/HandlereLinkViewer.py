@@ -2,6 +2,8 @@ from pywinauto.application import Application
 from ActionClickGui import ActionClickGui
 import warnings, pyuac, time, subprocess, os
 warnings.simplefilter('ignore', category=UserWarning)
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
 class HandlereLinkViewer(object):
 
@@ -32,33 +34,55 @@ class HandlereLinkViewer(object):
             return False
 
     def show_elink_viewer_help(self):
-        # self.__goto_folder_store_app()
-        # self.__command_line('elinkviewer -help')
+        current_path = self.get_current_path()
+        path_expected_file = os.getcwd() + '\expected\elink_viewer_help.txt'
+        self.goto_folder(self.path_store_app)
+        self.__command_line('elinkviewer -help')
         connect = Application().connect(title='eLinkViewer - Command Line Help')
         viewer_help = connect.Dialog.Edit.window_text()
-        print(viewer_help)
-        actual = open('Expected/elink_viewer_help.txt', 'r').read()
-        print(actual)
         connect.Dialog.close()
-        actual.close()
-        if actual == viewer_help:
-            return True
+        with open(path_expected_file, 'r') as f:
+            actual = f.read()
+        self.goto_folder(current_path)
+        return True if actual == viewer_help else False
 
     def start_elink_viewer_by_command(self):
-        self.__goto_folder_store_app()
+        current_path = self.get_current_path()
+        self.goto_folder(self.path_store_app)
         self.__command_line('elinkviewer')
+        self.goto_folder(current_path)
+        try:
+            connect = Application().connect(title='eLinkViewer Login')
+            connect.Dialog.close()
+            return True
+        except():
+            return False
 
     def connect_device_by_default_option(self):
-        self.__goto_folder_store_app()
+        current_path = self.get_current_path()
+        self.goto_folder(self.path_store_app)
         self.__command_line('elinkviewer -host=%s  -password=%s' % (self.server_ip, self.password))
+        self.goto_folder(current_path)
+        try:
+            connect = Application().connect(title='win-ul74uf8ujrp - eLinkViewer')
+            connect.eLinkWindowClass.close()
+            return True
+        except():
+            return False
 
     def connect_device_with_new_option(self):
-        self.__goto_folder_store_app()
+        current_path = self.get_current_path()
+        self.goto_folder(self.path_store_app)
         self.__command_line('elinkviewer -host=%s  -password=%s -optionsfile= %s' % (self.server_ip, self.password, self.path_optionsfile))
+        self.goto_folder(current_path)
+
+    def goto_folder(self, path):
+        os.chdir(path)
+
+    def get_current_path(self):
+        return os.getcwd()
 
     def __command_line(self, cmd):
         ## run it ##
-        p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
-        p.communicate()
-    def __goto_folder_store_app(self):
-        os.chdir(self.path_store_app)
+        subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+        time.sleep(2)
