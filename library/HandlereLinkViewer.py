@@ -1,9 +1,6 @@
 from pywinauto.application import Application
-from ActionClickGui import ActionClickGui
-import warnings, pyuac, time, subprocess, os
+import warnings, time, subprocess, os
 warnings.simplefilter('ignore', category=UserWarning)
-from concurrent.futures import ThreadPoolExecutor
-import threading
 
 class HandlereLinkViewer(object):
 
@@ -11,7 +8,7 @@ class HandlereLinkViewer(object):
         self.path_store_app = path_store_app
         self.server_ip = server_ip
         self.password = password
-        self.path_optionsfile = None
+        self.path_optionsfile = os.getcwd() + '\expected\optionfile.txt'
 
     def start_elink_viewer(self, close=True):
         elink_viewer = Application().start(cmd_line=self.path_store_app)
@@ -75,6 +72,12 @@ class HandlereLinkViewer(object):
         self.goto_folder(self.path_store_app)
         self.__command_line('elinkviewer -host=%s  -password=%s -optionsfile= %s' % (self.server_ip, self.password, self.path_optionsfile))
         self.goto_folder(current_path)
+        try:
+            connect = Application().connect(title='win-ul74uf8ujrp - eLinkViewer')
+            connect.eLinkWindowClass.close()
+            return True
+        except():
+            return False
 
     def goto_folder(self, path):
         os.chdir(path)

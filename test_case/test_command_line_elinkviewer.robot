@@ -46,3 +46,12 @@ Test Case Command Line 003
     ${status}   Connect Device By Default Option
     Log     ${status}
     should be equal  ${status}      ${True}
+
+Test Case Command Line 004
+    [Documentation]     Install eLinkViewer 32bit
+        ...     - Install eLinkViewer
+        ...     - Agree auto install Microsoft Visual C++ 2015
+        ...     - After install, open eLinkViewer and connect it
+    ${status}   Connect Device With New Option
+    Log     ${status}
+    should be equal  ${status}      ${True}
