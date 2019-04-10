@@ -8,7 +8,6 @@ ${PATH_FILE_START}               C:\\Program Files\\eLinkViewer\\elinkviewer.exe
 ${PATH_FILE_SETUP_VISUAL}        file_install\\vc_redist.x86.exe
 ${PATH_FILE_SETUP_VISUAL_13}     file_install\\vcredist_x86_2013.exe
 ${PATH_FILE_SETUP_VISUAL_17}     file_install\\vc_redist.x86_2017.exe
-${VERSION}                       86
 ${OLD_VERSION}                   True
 ${NEW_VERSION}                   True
 
@@ -21,7 +20,7 @@ Test Case Setup 001
         ...     - Agree auto install Microsoft Visual C++ 2015
         ...     - After install, open eLinkViewer and connect it
 
-    Install Elinkviewer     ${PATH_FILE_SETUP}
+    Install Elinkviewer     ${PATH_FILE_SETUP}            ${VERSION}
     ${status}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}
     Uninstall Visual    ${PATH_FILE_SETUP_VISUAL}       ${VERSION}
     should be equal      ${status}      ${True}
@@ -34,7 +33,7 @@ Test Case Setup 002
         ...     - Install manual Microsoft Visual C++ 2015
         ...     - After install, open eLinkViewer and connect it
 
-    Install Elinkviewer     ${PATH_FILE_SETUP}      ${None}         ${False}
+    Install Elinkviewer     ${PATH_FILE_SETUP}            ${VERSION}      ${None}         ${False}
     ${status_not_visual}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}
     Install Visual    ${PATH_FILE_SETUP_VISUAL}     ${VERSION}
     ${status}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}
@@ -50,7 +49,7 @@ Test Case Setup 005
         ...     - Install manual Microsoft Visual C++ 2015
         ...     - After install, open eLinkViewer and connect it
 
-    Install Elinkviewer     ${PATH_FILE_SETUP}      ${None}         ${True}
+    Install Elinkviewer     ${PATH_FILE_SETUP}            ${VERSION}      ${None}         ${True}
     ${status}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}      ${False}
     Uninstall Visual    ${PATH_FILE_SETUP_VISUAL}     ${VERSION}
     ${status_close}     Close Elinkviewer
@@ -69,7 +68,7 @@ Test Case Setup 008
         ...     - Install manual Microsoft Visual C++ 2013
         ...     - After install, open eLinkViewer and connect it
 
-    Install Elinkviewer     ${PATH_FILE_SETUP}       ${PATH_STORE_SETUP}     ${False}
+    Install Elinkviewer     ${PATH_FILE_SETUP}       ${PATH_STORE_SETUP}        ${VERSION}     ${False}
     ${status_not_visual}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}
     Install Visual    ${PATH_FILE_SETUP_VISUAL_13}     ${VERSION}     ${OLD_VERSION}
     ${status}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}
@@ -85,7 +84,7 @@ Test Case Setup 009
         ...     - Install manual Microsoft Visual C++ 2017
         ...     - After install, open eLinkViewer and connect it
 
-    Install Elinkviewer     ${PATH_FILE_SETUP}       ${PATH_STORE_SETUP}     ${False}
+    Install Elinkviewer     ${PATH_FILE_SETUP}       ${PATH_STORE_SETUP}     ${VERSION}     ${False}
     ${status_not_visual}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}
     Install Visual    ${PATH_FILE_SETUP_VISUAL_17}       ${VERSION}     ${False}    ${NEW_VERSION}
     ${status}       Start Elink Viewer      ${PATH_FILE_START}      ${SERVER_IP}        ${password}

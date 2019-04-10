@@ -8,11 +8,11 @@ warnings.simplefilter('ignore', category=UserWarning)
 
 class HandlerInstall(object):
 
-   def install_elinkviewer(self, path_file_setup, path_store_install=None, install_vc_redist=True):
+   def install_elinkviewer(self, path_file_setup, version, path_store_install=None, install_vc_redist=True):
+       title = self.__get_title_visual(version)
        try:
            if not pyuac.isUserAdmin():
                pyuac.runAsAdmin()
-           print(path_file_setup)
            elink_viewer = Application(backend="win32").start(path_file_setup)
            elink_viewer.InstallDialog.NextButton.wait('ready', timeout=30).click_input()
            elink_viewer.InstallDialog.IAgreeRadioButton.wait('ready', timeout=30).click_input()
@@ -20,44 +20,27 @@ class HandlerInstall(object):
            elink_viewer.InstallDialog.CheckBox.wait('ready', timeout=30).click_input()
            elink_viewer.InstallDialog.NextButton.wait('ready', timeout=30).click_input()
            if path_store_install:
-               elink_viewer.InstallDialog.Edit.Wait('ready', timeout=30).type_keys(path_store_install,with_spaces=True)
+               elink_viewer.InstallDialog.Edit.Wait('ready', timeout=30).type_keys(path_store_install, with_spaces=True)
            elink_viewer.InstallDialog.NextButton.wait('ready', timeout=30).click_input()
            elink_viewer.InstallDialog.NextButton.wait('ready', timeout=30).click_input()
            elink_viewer.InstallDialog.InstallButton.wait('ready', timeout=30).click_input()
-           time.sleep(15)
+           time.sleep(20)
            # Install Microsoft Visual C++
-           if install_vc_redist:
-               ActionClickGui().check_agree_box_visual()
-               ActionClickGui().click_install_visual()
-               time.sleep(35)
-               ActionClickGui().click_close_visual()
-           else:
-               ActionClickGui().click_cancel_visual()
-               ActionClickGui().confirm_yes_cancel_visual()
-
+           self.__auto_setup_success_visual(install_vc_redist, title)
            elink_viewer.InstallDialog.FinishButton.wait('ready', timeout=30).click_input()
+           return True
        except:
-           print('Do not error')
+           return False
 
    def install_visual(self, path_file_setup, version, old_version=False, new_version=False):
-       title = "Microsoft Visual C++ 2015 Redistributable (x86) - 14.0.24123 Setup"
-       if version == '64':
-           title = "Microsoft Visual C++ 2015 Redistributable (x64) - 14.0.24212 Setup"
-       if version == '64' and old_version:
-           title = "Microsoft Visual C++ 2013 Redistributable (x64) - 12.0.30501 Setup"
-       if version == '86' and old_version:
-           title = "Microsoft Visual C++ 2013 Redistributable (x86) - 12.0.30501 Setup"
-       if version == '64' and new_version:
-           title = "Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27027 Setup"
-       if version == '86' and new_version:
-           title = "Microsoft Visual C++ 2017 Redistributable (x86) - 14.16.27027 Setup"
 
+       title = self.__get_title_visual(version, old_version, new_version)
        Application().start(path_file_setup)
        time.sleep(2)
        vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
        vc_redist.CheckBox.wait('ready', timeout=5).click_input()
        vc_redist.InstallButton.wait('ready', timeout=30).click_input()
-       time.sleep(35)
+       self.__wait_setup_success_visual(title)
        vc_redist.CloseButton5.wait('ready', timeout=30).click_input()
 
    def start_elink_viewer(self, path_store_app, server_ip, password, close=True):
@@ -82,6 +65,23 @@ class HandlerInstall(object):
             return False
 
    def uninstall_visual(self, path_file_setup, version, old_version=False, new_version=False):
+       title = self.__get_title_visual(version, old_version, new_version)
+       Application().start(path_file_setup)
+       time.sleep(2)
+       vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
+       vc_redist.UninstallButton.wait('ready', timeout=5).click_input()
+       self.__wait_setup_success_visual(title)
+       vc_redist.CloseButton5.wait('ready', timeout=30).click_input()
+
+   def close_elinkviewer(self):
+       try:
+            connect = Application().connect(title='win-ul74uf8ujrp - eLinkViewer')
+            connect.eLinkWindowClass.close()
+            return True
+       except:
+           return False
+
+   def __get_title_visual(self, version, old_version=False, new_version=False):
 
        title = "Microsoft Visual C++ 2015 Redistributable (x86) - 14.0.24123 Setup"
        if version == 'win64':
@@ -94,22 +94,36 @@ class HandlerInstall(object):
            title = "Microsoft Visual C++ 2017 Redistributable (x64) - 14.16.27027 Setup"
        if version == 'win86' and new_version:
            title = "Microsoft Visual C++ 2017 Redistributable (x86) - 14.16.27027 Setup"
-       Application().start(path_file_setup)
-       time.sleep(2)
+
+       return title
+
+   def __auto_setup_success_visual(self, install_vc_redist, title):
+
        vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
-       vc_redist.UninstallButton.wait('ready', timeout=5).click_input()
-       time.sleep(35)
-       vc_redist.CloseButton5.wait('ready', timeout=30).click_input()
+       if install_vc_redist:
+           vc_redist.CheckBox.wait('ready', timeout=5).click_input()
+           vc_redist.InstallButton.wait('ready', timeout=5).click_input()
+           self.__wait_setup_success_visual(title)
+           vc_redist.CloseButton5.wait('ready', timeout=5).click_input()
+       else:
+           vc_redist.CloseButton.wait('ready', timeout=5).click_input()
+           ActionClickGui().confirm_yes_cancel_visual()
 
-   def close_elinkviewer(self):
-       try:
-            connect = Application().connect(title='win-ul74uf8ujrp - eLinkViewer')
-            connect.eLinkWindowClass.close()
-            return True
-       except:
-           return False
+   def __wait_setup_success_visual(self, title):
 
-
+       element = False
+       index = 0
+       vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
+       while not element:
+           try:
+               status = vc_redist.Static1.window_text()
+               if status == 'Setup Successful':
+                   element = True
+           except:
+               element = False
+               index += 1
+               if index > 60:
+                   return False
 
 
 

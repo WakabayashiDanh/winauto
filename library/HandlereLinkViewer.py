@@ -70,7 +70,7 @@ class HandlereLinkViewer(object):
     def connect_device_with_new_option(self):
         current_path = self.get_current_path()
         self.goto_folder(self.path_store_app)
-        self.__command_line('elinkviewer -host=%s  -password=%s -optionsfile= %s' % (self.server_ip, self.password, self.path_optionsfile))
+        self.__command_line('elinkviewer -optionsfile=%s -host=%s  -password=%s' % (self.path_optionsfile, self.server_ip, self.password))
         self.goto_folder(current_path)
         try:
             connect = Application().connect(title='win-ul74uf8ujrp - eLinkViewer')

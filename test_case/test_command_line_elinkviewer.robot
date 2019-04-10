@@ -10,7 +10,7 @@ Suite Teardown	Command Teardown
 Command Suite Setup
     ${PATH_FILE_SETUP} =    Set Variable        file_install\\elinkviewer-1.3.0-win86.exe
     Run Keyword If      "${VERSION}"=="win64"         Set Global Variable     ${PATH_FILE_SETUP}       file_install\\elinkviewer-1.3.0-win64.exe
-    Install Elinkviewer     ${PATH_FILE_SETUP}
+    Install Elinkviewer     ${PATH_FILE_SETUP}      ${VERSION}
 
 Command Teardown
     ${PATH_FILE_SETUP_VISUAL} =    Set Variable        file_install\\vc_redist.x86.exe
