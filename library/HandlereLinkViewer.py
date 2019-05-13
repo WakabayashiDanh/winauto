@@ -31,6 +31,15 @@ class HandlereLinkViewer(object):
             print("Error: Do not start eLinkViewer")
             return False
 
+    def start_elink_viewers(self):
+        Application().start(cmd_line=self.path_store_app)
+        time.sleep(5)
+        try:
+            Application().connect(title='eLinkViewer Login')
+            return True
+        except:
+            return False
+
     def login_elink_viewer(self, password, username=None):
         connect = Application().connect(title='eLinkViewer Login')
         connect.Dialog.ComboBox.Edit.wait('ready', timeout=30).type_keys(self.server_ip, with_spaces=True)
@@ -43,6 +52,15 @@ class HandlereLinkViewer(object):
             connect.Dialog.Button.wait('ready', timeout=30).click_input()
             print('Do not connect to server')
             return False
+
+    def handler_authentication_login(self, retry=False, cancel=False):
+        connect = Application().connect(title='%s - eLinkViewer' % self.server_ip)
+        error = connect.Dialog.Static2.window_text()
+        print(error)
+        if retry:
+            connect.Dialog.Button.wait('ready', timeout=30).click_input()
+        if cancel:
+            connect.Dialog.CancelButton.wait('ready', timeout=30).click_input()
 
     def verify_elink_viewer_help(self):
         connect = Application().connect(title='eLinkViewer - Command Line Help')
@@ -69,6 +87,15 @@ class HandlereLinkViewer(object):
             connect.eLinkWindowClass.close()
             return True
         except():
+            return False
+
+    def verify_authentication_login(self):
+        expect_error = 'Authentication reason: Authentication failed from 192.168.82.13'
+        connect = Application().connect(title='%s - eLinkViewer' % self.server_ip)
+        error = connect.Dialog.Static2.window_text()
+        if error == expect_error:
+            return True
+        else:
             return False
 
     def send_command_line(self, cmd):

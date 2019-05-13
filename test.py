@@ -37,13 +37,28 @@
 from pywinauto.application import Application
 import warnings,  time
 warnings.simplefilter('ignore', category=UserWarning)
+from library.HandlereLinkViewer import HandlereLinkViewer
+
+# login successfully elink_viewer
+# test = HandlereLinkViewer(path_store_app=r'C:\\Program Files\\eLinkViewer\\elinkviewer.exe', server_ip='192.168.82.10', password='test')
+# test.start_elink_viewers()
+# test.login_elink_viewer(password='test')
+# time.sleep(5)
+# test.verify_connection()
+
+# login incorrect password
+test = HandlereLinkViewer(path_store_app=r'C:\\Program Files\\eLinkViewer\\elinkviewer.exe', server_ip='192.168.82.10', password='test')
+test.start_elink_viewers()
+test.login_elink_viewer(password='test1')
+time.sleep(2)
+print(test.handler_authentication_login(retry=True))
 
 
-element = False
-index = 0
-
-title = "Microsoft Visual C++ 2015 Redistributable (x64) - 14.0.24212 Setup"
-Application().start(r'C:\Users\Danh Nguyen\PycharmProjects\eLinkViewer\file_install\vc_redist.x64.exe')
+# element = False
+# index = 0
+#
+# title = "Microsoft Visual C++ 2015 Redistributable (x64) - 14.0.24212 Setup"
+# Application().start(r'C:\Users\Danh Nguyen\PycharmProjects\eLinkViewer\file_install\vc_redist.x64.exe')
 # while not element:
 #     try:
 #
@@ -62,19 +77,19 @@ Application().start(r'C:\Users\Danh Nguyen\PycharmProjects\eLinkViewer\file_inst
 # vc_redist.InstallButton.wait('ready', timeout=30).click_input()
 # time.sleep(15)
 # vc_redist.CloseButton5.wait('ready', timeout=30).click_input()
-time.sleep(2)
-vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
-vc_redist.CheckBox.wait('ready', timeout=5).click_input()
-vc_redist.InstallButton.wait('ready', timeout=30).click_input()
-while not element:
-    try:
-        status = vc_redist.Static1.window_text()
-        if status == 'Setup Successful':
-            element = True
-    except:
-        element = False
-        index += 1
-        print('Time sleep %s' %index)
-        if index > 60:
-            break
-vc_redist.CloseButton.wait('ready', timeout=45).click_input()
+# time.sleep(2)
+# vc_redist = Application(backend="win32").connect(title=title)['WixStdBA']
+# vc_redist.CheckBox.wait('ready', timeout=5).click_input()
+# vc_redist.InstallButton.wait('ready', timeout=30).click_input()
+# while not element:
+#     try:
+#         status = vc_redist.Static1.window_text()
+#         if status == 'Setup Successful':
+#             element = True
+#     except:
+#         element = False
+#         index += 1
+#         print('Time sleep %s' %index)
+#         if index > 60:
+#             break
+# vc_redist.CloseButton.wait('ready', timeout=45).click_input()
